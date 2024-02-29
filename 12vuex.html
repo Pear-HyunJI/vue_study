@@ -1,73 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <script src="https://unpkg.com/vuex@2.0.0"></script>
-</head>
-<body>
-    
-    <div id="app">
-        <count-comp title="카운터1"></count-comp>
-        <count-comp title="카운터2"></count-comp>
-        <count-comp title="카운터3"></count-comp>
-    </div>
 
-    <script>
-        const store = new Vuex.Store({
-            state:{
-                count : 0
-            },
-            mutations:{
-                fnIncData(state){
-                    return state.count++
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script src="https://unpkg.com/vuex@2.0.0"></script>
+    </head>
+
+    <body>
+        <div id="app">
+            <count-comp no="1"></count-comp>
+            <count-comp no="2"></count-comp>
+            <count-comp no="3"></count-comp>
+        </div>
+        <script>
+            const store = new Vuex.Store({
+                state: {
+                    count: 0,
+                    name: '카운터'
                 },
-                fnDecData(state){
-                    return state.count--
+                mutations: {
+                    // store에 있는 state 값을 변경시키는 역할을 함
+                    // parameter명은 state여야 함
+                    fnInc(state) {
+                        return state.count++;
+                    },
+                    fnDec(state) {
+                        return state.count--;
+                    }
+                },
+                getters: {
+                    // parameter명은 state여야 함
+                    fnGetData(state) {
+                        return state.count;
+                    },
+                    fnGetTitle(state) {
+                        return state.name;
+                    }
                 }
-            },
-            getters:{
-                fnGetData(state){
-                    return state.count
-                }
-            }
-        })
+            })
 
-        Vue.component('count-comp',
-            {
-                props:['title'],
-                template:`
+            Vue.component('count-comp',
+                {
+                    props: ['no'],
+                    template: `
                     <div>
-                        <h1>{{ title }}</h1>
+                        <h1>{{ fnGetName }} {{no}}</h1>
                         <p>카운터 : {{ fnGetCount }} </p>
                         <button @click="fnIncrement">+1 증가</button>
                         <button @click="fnDecrement">-1 감소</button>
                     </div>
                 `,
-                computed:{
-                    fnGetCount(){
-                        return store.getters.fnGetData
-                    }
-                },
-                methods:{
-                    fnIncrement(){
-                        store.commit('fnIncData')
+                    computed: {
+                        fnGetCount() {
+                            return store.getters.fnGetData
+                        },
+                        fnGetName() {
+                            return store.getters.fnGetTitle
+                        }
                     },
-                    fnDecrement(){
-                        store.commit('fnDecData')
-                    }   
+                    methods: {
+                        fnIncrement() {
+                            store.commit('fnInc');
+                        },
+                        fnDecrement() {
+                            store.commit('fnDec');
+                        }
+                    }
                 }
-            }
-        )
+            )
 
-        new Vue({
-            el:'#app',
-            store
-        })
-    </script>
+            new Vue({
+                el: '#app',
+                store
+            })
+        </script>
+    </body>
 
-</body>
 </html>
